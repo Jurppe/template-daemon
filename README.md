@@ -13,7 +13,9 @@ Tarkista että prosessi on ajossa taustalla:
 
 # Daemon prosessin toiminta
 ## Yleistä
-Daemon prosessilla tarkoitetaan prosessia joka on ajossa käyttöjärjestelmän taustalla, sen sijaan että se olisi jatkuvasti interaktiivisessa vuorovaikutuksessa käyttäjän kanssa. Tyypillisesti prosessin nimen perään on lisätty kirjain 'd' jotta käyttäjä tietää että kyseessä on taustaprosessi, eli daemon. Esimerkkejä daemon prosesseista ovat esimerkiksi unix käyttöjärjestelmien os-tasoisesta lokituksesta huolehtiva syslogd, ja sitten sshd, joka taustalla odottaa saapuvia ssh-yhteyksiä. Vastaava ohjelma toimintaperiaatteeltaan Windows ympäristössä on palvelu (engl. Service).
+Daemon prosessilla tarkoitetaan prosessia joka on ajossa käyttöjärjestelmän taustalla, sen sijaan että se olisi jatkuvasti interaktiivisessa vuorovaikutuksessa käyttäjän kanssa. Tyypillisesti prosessin nimen perään on lisätty kirjain 'd' jotta käyttäjä tietää että kyseessä on taustaprosessi, eli daemon.
+
+Esimerkkejä daemon prosesseista ovat esimerkiksi unix käyttöjärjestelmien os-tasoisesta lokituksesta huolehtiva syslogd, ja sitten sshd, joka taustalla odottaa saapuvia ssh-yhteyksiä. Vastaava ohjelma toimintaperiaatteeltaan Windows ympäristössä on palvelu (engl. Service).
 
 ## Toiminta
 Daemon prosessi luodaan yleensä isäntäprosessista haarauttamalla, eli forkkaamalla. Isäntäprosessi toimii alustavana prosessina, eli 'init(ialize)-prosessina', jonka tehtävä on alustaa taustaprosessin toiminta. Kun isäntä on suorittanut forkkauksen itsestään ja luonut taustaprosessin, se suorittaa exit(<exit_code>) systeemikutsun, eli pyytää käyttöjärjestelmää tappamaan oman prosessinsa.
@@ -42,7 +44,9 @@ Seuraavaksi alustetaan taustaprosessin työkansio, eli tiedostojärjestelmän po
 
 > R55: chdir("/");
 
-Tämän perusteella voidaan viitata absoluuttisen tiedostopolun lisäksi relatiivisella tiedostopolulla. Eli sen sijaan, että viitataan tiedostoihin niiden koko polulla (absoluuttinen), voidaan viitata esimerkiksi työkansiossa oleviin tiedostoihin relatiivisesti './my_daemons.log' -notaatiolla, jolla viitataan suoraan työkansiossa olevaan log-tiedostoon. Lisäksi siirtämällä työkansion johonkin määritettyyn sijaintiin, voidaan varmistua siitä, että taustaprosessi ei ole ajossa jonkin liitetyn levyjärjestelmän kansiopolussa. Jolloin levyjärjestelmän poistaminen ei onnistu ilman virheitä taustaprosessin ajossa, ja toisaalta taustaprosessin suoritus saattaa vaikettaa levyjärjestelmän poistamista.
+Tämän perusteella voidaan viitata absoluuttisen tiedostopolun lisäksi relatiivisella tiedostopolulla. Eli sen sijaan, että viitataan tiedostoihin niiden koko polulla (absoluuttinen), voidaan viitata esimerkiksi työkansiossa oleviin tiedostoihin relatiivisesti './my_daemons.log' -notaatiolla, jolla viitataan suoraan työkansiossa olevaan log-tiedostoon.
+
+Lisäksi siirtämällä työkansion johonkin määritettyyn sijaintiin, voidaan varmistua siitä, että taustaprosessi ei ole ajossa jonkin liitetyn levyjärjestelmän kansiopolussa. Jolloin levyjärjestelmän poistaminen ei onnistu ilman virheitä taustaprosessin ajossa, ja toisaalta taustaprosessin suoritus saattaa vaikettaa levyjärjestelmän poistamista.
 
 Lopuksi lapsiprosessi siivoa mahdollisia perittyjä tiedosto viitteittä (engl. File Descriptors "FD") jotka voivat osoittaa mahdollisiin komentotulkkeihin tai muihin tiedostoihin. Tällä varmistetaan standard input, standard output ja standard error viitteiden oikeallinen toiminta, ja toisaalta vältetään mahdolliset kummallisuudet taustaprosessin toiminnassa.
 
@@ -50,7 +54,9 @@ Lopuksi lapsiprosessi siivoa mahdollisia perittyjä tiedosto viitteittä (engl. 
 > R59: for (x = sysconf(_SC_OPEN_MAX); x>=0; x--)
 > R61:    close (x);
 
-## Daemon prosessit käyttöjärjestelmän käynnistyksen yhteydessä
+## Käytäntö: Käynnistyksen yhteydessä
+
+## Käytäntö: Shell komentotulkissa
 
 #  Viitteet
 https://notes.shichao.io/apue/ch13/
