@@ -1,7 +1,10 @@
-x/*
+/*
  * daemonize.c
- * This example daemonizes a process, writes a few log messages,
- * sleeps 20 seconds and terminates afterwards.
+ * Template for process that is working as a background process, aka "daemon".
+ * This Process is made with C-language, and it is made to be a starting point for
+ * daemon-process. Process functionality will need to be implemented in main()-function.
+ * The other function skeleton_daemon() takes care of the forking and creating of the
+ * child process, which later be known as the daemon process.
  */
 
 #include <stdio.h>
@@ -14,6 +17,7 @@ x/*
 
 static void skeleton_daemon()
 {
+    /* Initialize the parent pid */
     pid_t pid;
 
     /* Fork off the parent process */
@@ -32,11 +36,10 @@ static void skeleton_daemon()
         exit(EXIT_FAILURE);
 
     /* Catch, ignore and handle signals */
-    //TODO: Implement a working signal handler */
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
 
-    /* Fork off for the second time*/
+    /* Fork off for the second time incase of hyper-v*/
     pid = fork();
 
     /* An error occurred */
@@ -47,7 +50,7 @@ static void skeleton_daemon()
     if (pid > 0)
         exit(EXIT_SUCCESS);
 
-    /* Set new file permissions */
+    /* Set new file permissions for owner only */
     umask(0);
 
     /* Change the working directory to the root directory */

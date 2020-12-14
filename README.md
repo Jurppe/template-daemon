@@ -34,7 +34,7 @@ Funktiokutsu setsid() täydentää prosessin forkkauksen. Kutsun avulla taustapr
 
 ```pid = fork();```
 
-System V perustuvissa käyttöjärjestelmissä halutaan uudella forkkauksella tuhota sessioperheen isäntä, jatkaa suoritusta tämän session lapsena. [TARKENNA]
+System V perustuvissa käyttöjärjestelmissä halutaan uudella forkkauksella tuhota sessioperheen isäntä, jatkaa suoritusta tämän session lapsena. Tällä varmistetaan se, että taustaprosessi ei enää pysty saamaan suoritukseen samaa terminaali-sessiota.
 
 Hyvän tavan mukaisesti taustaprosessille tulisi määrittää se, miten se luo uusia tiedostoja käyttöjärjestelmän levyjärjestelmään. Tai tarkemmin ottaen, millaisilla oikeuksilla. Kuten tiedostossa daemonize.c määritellään taustaprosessille:
 
@@ -50,16 +50,16 @@ Tämän perusteella voidaan viitata absoluuttisen tiedostopolun lisäksi relatii
 
 Lisäksi siirtämällä työkansion johonkin määritettyyn sijaintiin, voidaan varmistua siitä, että taustaprosessi ei ole ajossa jonkin liitetyn levyjärjestelmän kansiopolussa. Jolloin levyjärjestelmän poistaminen ei onnistu ilman virheitä taustaprosessin ajossa, ja toisaalta taustaprosessin suoritus saattaa vaikettaa levyjärjestelmän poistamista.
 
-Lopuksi lapsiprosessi siivoa mahdollisia perittyjä tiedosto viitteittä (engl. File Descriptors "FD") jotka voivat osoittaa mahdollisiin komentotulkkeihin tai muihin tiedostoihin. Tällä varmistetaan standard input, standard output ja standard error viitteiden oikeallinen toiminta, ja toisaalta vältetään mahdolliset kummallisuudet taustaprosessin toiminnassa.
+Lopuksi lapsiprosessi siivoa mahdollisia perittyjä tiedosto viitteittä (engl. File Descriptors "FD"), jotka voivat osoittaa mahdollisiin komentotulkkeihin tai aiemmin avattuihin muihin tiedostoihin. Tällä varmistetaan mm. standard input, standard output ja standard error viitteiden oikeallinen toiminta, ja toisaalta vältetään mahdolliset kummallisuudet taustaprosessin toiminnassa. Joissakin tapauksissa tiedostoviitteet 1, 2 ja 3 voidaan haluta säilyttää, mikäli halutaan hyödyntää tulostusta standard input, output tai error virtoihin.
 ```
 int x;
 for (x = sysconf(_SC_OPEN_MAX); x>=0; x--)
   close (x);
 ```
-[TÄYDENNÄ]
-## Käytäntö: Käynnistyksen yhteydessä
-
-## Käytäntö: Shell komentotulkissa
+Joissakin käyttöjärjestelmissä olisi hyvä luoda pid-tiedosto prosessille kansion /var/run alle. Tuo tiedosto kaikessa yksinkertaisuudessaan sisältää vain ko. prosessin id:n, jonka avulla prosessi itse, tai joissakin  tapauksissa myös käyttöjärjestelmä tai käyttäjä voi hallita prosessin ajoa. Lisäksi sen avulla prosessi pystyy hallitsemaan omaa tilaansa, ja estää mahdollisen tahattoman monistautumisen.
 
 #  Viitteet
 https://notes.shichao.io/apue/ch13/
+https://en.wikipedia.org/wiki/Init#SysV-style
+https://www.computerhope.com/jargon/f/file-descriptor.htm
+https://man7.org/linux/man-pages/man7/daemon.7.html
