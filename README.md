@@ -11,6 +11,8 @@ Daemon prosessin käynnistäminen:
 Tarkista että prosessi on ajossa taustalla:
 ```ps -xj | grep firstdaemon```
 
+Kyseinen prosessi suorittaa komennon `sleep(20)` jo lopettaa ajon. Prosessi lokittaa syslogiin käynnistyksen ja lopetuksen.
+
 # Daemon prosessin toiminta
 ## Yleistä
 Daemon prosessilla tarkoitetaan prosessia joka on ajossa käyttöjärjestelmän taustalla, sen sijaan että se olisi jatkuvasti interaktiivisessa vuorovaikutuksessa käyttäjän kanssa. Tyypillisesti prosessin nimen perään on lisätty kirjain 'd' jotta käyttäjä tietää että kyseessä on taustaprosessi, eli daemon.
