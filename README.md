@@ -3,13 +3,13 @@ Runko *nix daemon-prosessille
 
 # Käyttö
 C-koodin kääntäminen:
-```gcc -o firstdaemon daemonize.c```
+```gcc -o the-background-process my-daemon-template.c```
 
 Daemon prosessin käynnistäminen:
-```./firstdaemon```
+```./the-background-process```
 
 Tarkista että prosessi on ajossa taustalla:
-```ps -xj | grep firstdaemon```
+```ps -xj | grep the-background-process```
 
 Kyseinen prosessi suorittaa komennon `sleep(20)` jo lopettaa ajon. Prosessi lokittaa syslogiin käynnistyksen ja lopetuksen.
 
