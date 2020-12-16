@@ -65,7 +65,13 @@ for (x = sysconf(_SC_OPEN_MAX); x>=0; x--)
 Joissakin käyttöjärjestelmissä olisi hyvä luoda pid-tiedosto prosessille kansion /var/run alle. Tuo tiedosto kaikessa yksinkertaisuudessaan sisältää vain ko. prosessin id:n, jonka avulla prosessi itse, tai joissakin  tapauksissa myös käyttöjärjestelmä tai käyttäjä voi hallita prosessin ajoa. Lisäksi sen avulla prosessi pystyy hallitsemaan omaa tilaansa, ja estää mahdollisen tahattoman monistautumisen.
 
 #  Viitteet
+
 https://notes.shichao.io/apue/ch13/
+
 https://en.wikipedia.org/wiki/Init#SysV-style
+
 https://www.computerhope.com/jargon/f/file-descriptor.htm
+
 https://man7.org/linux/man-pages/man7/daemon.7.html
+
+http://faculty.salina.k-state.edu/tim/ossg/Introduction/OSworking.html
