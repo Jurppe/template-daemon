@@ -25,12 +25,18 @@ Daemon prosessi luodaan yleensä isäntäprosessista haarauttamalla, eli forkkaa
 if(pid > 0)
   exit(EXIT_SUCCESS);
 ```
-Samaisen systeemikutsun mukana prosessi kertoo käyttöjärjestelmälle ja käyttäjälle exit_code -parametrilla onnistuiko taustaprosessin luominen vai päätyikö se virheeseen. Tämä logiikka rakennetaan init-koodiin process id (pid) vertailemalla yllä olevaan tapaan. Jos PID on suurempi kuin 0, eli init-prossein ID, tarkoittaa se sitä että käyttöjärjestelmä on myöntänyt sille prosessitaulusta oikean ID:n ja sallinut sen suorituksen. Exit -komennon suorittaminen on tärkeää seuraavista syistä. Mikäli taustaprosessi on käynnistetty shell-komentona, kun prosessi lopettaa toimintansa, lopettaa shell odottamasta prosessilta vastausta ja täten sallii käyttäjän jatkavan muuta toimintaansa. Lisäksi taustaprosessi ei saa olla oman prosessiperheen isäntä (engl. parent/leader), jotta `setsit()` -funktiokutsulla voidaan luoda halutusti uusi sessio.
+Samaisen systeemikutsun mukana prosessi kertoo käyttöjärjestelmälle ja käyttäjälle exit_code -parametrilla onnistuiko taustaprosessin luominen vai päätyikö se virheeseen. Tämä logiikka rakennetaan init-koodiin process id (pid) vertailemalla yllä olevaan tapaan. Jos PID on suurempi kuin 0, eli init-prossein ID, tarkoittaa se sitä että käyttöjärjestelmä on myöntänyt sille prosessitaulusta oikean ID:n ja sallinut sen suorituksen. Exit -komennon suorittaminen on tärkeää seuraavista syistä. Mikäli taustaprosessi on käynnistetty shell-komentona, kun prosessi lopettaa toimintansa, lopettaa shell odottamasta prosessilta vastausta ja täten sallii käyttäjän jatkavan muuta toimintaansa. Lisäksi taustaprosessi ei saa olla oman prosessiperheen isäntä (engl. parent/leader), jotta `setsid()` -funktiokutsulla voidaan luoda halutusti uusi sessio.
 ```
 if (setsid() < 0)
   exit(EXIT_FAILURE);
 ```
-Funktiokutsu setsid() täydentää prosessin forkkauksen. Kutsun avulla taustaprosessi kiinnitetää uuteen sessioon, täten luoden ko. taustaproessista oman prosessiperheensä isännän. Lisäksi uuden session alaisena taustaprosessi ei enää ole riippuvainen sen luoneesta komentotulkista, eikä komentotulkki toisaalta myöskään prosessin suorituksesta. Joissakin käyttöjärjestelmissä on suositeltua suorittaa uusi `fork()` funktion kutsu `setsid()` funktiokutsun jälkeen.
+Funktiokutsu `fork()` yksinkertaisuudessaan haarauttaa nykyisen prosessin, luoden sille lapsen. Yleensä prosessit omaavat keskenään isäntä/lapsi välisiä relaatioita, samassa prosessiperheessä olevat prosessit omaavat yhden isäntäprosessin, täten itse ollen sen lapsia. Toisaalta kaikki prosessit ovat käyttöjärjestelmän init-prosessista (pid 1) haarautuneita prosesseja, eli lapsia. Tämä kuvattu prosessitoiminta on ominaista nimenomaan unix käyttöjärjestelmissä, kun taas windows käyttöjärjestelmässä prosessit toimivat erilailla. Tässä korkeamman tason ohjelmoinnissa funktiokutsu aiheuttaa prosessorille sovelluskeskeytyksen, jotta se voi suorittaa etuoikeutettuna prosessin haarautumisen, eli `fork()` funktion.
+
+![esimerkki fork kutsun luomasta cpu keskeytyksestä ja sen toiminnasta](http://faculty.salina.k-state.edu/tim/ossg/_images/sys_call.jpg)
+
+Kuvassa kuvattu ylemmän tason ohjelmointikielen fork() funktion toiminta. Funktiokutsu aiheuttaa trapin prosessorille, joka trap taulun avulla hakee ja suorittaa halutun järjestelmäkutsun.
+
+Funktiokutsu `setsid()` täydentää prosessin forkkauksen. Kutsun avulla taustaprosessi kiinnitetää uuteen sessioon, täten luoden ko. taustaproessista oman prosessiperheensä isännän. Lisäksi uuden session alaisena taustaprosessi ei enää ole riippuvainen sen luoneesta komentotulkista, eikä komentotulkki toisaalta myöskään prosessin suorituksesta. Joissakin käyttöjärjestelmissä on suositeltua suorittaa uusi `fork()` funktion kutsu `setsid()` funktiokutsun jälkeen.
 
 ```pid = fork();```
 
